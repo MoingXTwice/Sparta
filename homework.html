@@ -65,11 +65,24 @@ crossorigin="anonymous"></script>
             margin-top: 10px;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "http://spartacodingclub.shop/sparta_api/weather/yangju",
+                data: {},
+                success: function (response) {
+                    $('#temp').text(response['temp'])
+                }
+            })
+        });
+    </script>
 </head>
 
 <body>
     <div class="myTitle">
         <h1>춘식이 팬명록</h1>
+        <p>현재 기온 : <span id="temp">00.00</span>도</p>
     </div>
     <div class="myPost">
         <div class="form-floating mb-3">
