@@ -1,0 +1,31 @@
+/**표시는 전체 설정*/
+* {
+    /*폰트 설정*/
+    font-family: 'Gowun Dodum', sans-serif;
+    /*설정한 폰트의 링크는 <title> 아래에
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    식으로 붙혀넣는다.*/
+}
+/*이미지를 넣고 싶다면 이 3개는 같이 따라다닌다.*/
+.image {
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://movie-phinf.pstatic.net/20210715_95/1626338192428gTnJl_JPEG/movie_image.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+/*센터에 정렬시키고 싶다면 이 4개는 같이 따라다닌다.*/
+.center {
+    display: flex;
+    flex-direction: column; /* 한 줄에 맞추고 싶다면 row*/
+    justify-content: center;
+    align-items: center;
+}
+/* > 표시는 mybutton 안에 button을 찾는 것*/
+.mybutton > button:hover { /* hover는 마우스를 위에 올렸을 때 작동하는 것 */
+    background-color: transparent; /*transparent -> 배경 없음*/
+}
+
+.mobile {
+    max-width: 1200px; /*최대한 늘어나도 지정한 너비까지만 늘어남*/ /**/
+    width: 95%;
+}

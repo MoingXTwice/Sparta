@@ -19,14 +19,18 @@
     <script>
       function q1() {
         $.ajax({
-                type: "GET",
-                url: "http://spartacodingclub.shop/sparta_api/rtan",
-                data: {},
-                success: function (response) {
-                    $('#img-rtan').attr("src", response['url'])
-                    $('#text-rtan').text(response['msg'])
-                }
-            })
+            type: "GET",
+            url: "http://spartacodingclub.shop/sparta_api/rtan",
+            data: {},
+            success: function (response) {
+                let message = response['msg']
+                let image = response['url']
+
+                $('#img-rtan').attr("src", image)
+                $('#text-rtan').text(message)
+            }
+        })
+
       }
     </script>
 

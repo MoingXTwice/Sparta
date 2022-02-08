@@ -26,20 +26,18 @@
                 url: "http://spartacodingclub.shop/sparta_api/seoulair",
                 data: {},
                 success: function (response) {
+                    let row = response['RealtimeCityAir']['row']
 
-                    let rows = response['RealtimeCityAir']['row']
-
-                    for (let i = 0; i < rows.length; i++) {
-                        let gu_name = rows[i]['MSRSTE_NM']
-                        let gu_mise = rows[i]['IDEX_MVL']
-
+                    for (let i = 0; i < row.length; i++) {
+                        let mise_gu = row[i]['MSRSTE_NM']
+                        let mise_val = row[i]['IDEX_MVL']
 
                         let temp_html = ``
 
-                        if (gu_mise > 50) {
-                            temp_html = `<li class="bad">${gu_name} : ${gu_mise}</li>`
-                        } else{
-                            temp_html = `<li>${gu_name} : ${gu_mise}</li>`
+                        if (mise_val > 60) {
+                            temp_html = `<li class="bad">${mise_gu} : ${mise_val}</li>`;
+                        } else {
+                            temp_html = `<li>${mise_gu} : ${mise_val}</li>`
                         }
 
                         $('#names-q1').append(temp_html);
@@ -62,10 +60,6 @@
         <p>업데이트 버튼을 누를 때마다 지웠다 새로 씌여져야 합니다.</p>
         <button onclick="q1()">업데이트</button>
         <ul id="names-q1">
-<!--            <li>중구 : 82</li>-->
-<!--            <li>종로구 : 87</li>-->
-<!--            <li>용산구 : 84</li>-->
-<!--            <li>은평구 : 82</li>-->
         </ul>
     </div>
 </body>

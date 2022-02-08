@@ -2,31 +2,29 @@
 <html lang="en">
 
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 
-<title>스파르타코딩클럽 | 부트스트랩 연습하기</title>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-
-
+    <title>스파르타코딩클럽 | 부트스트랩 연습하기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap" rel="stylesheet">
     <style>
-        *{
-            font-family: 'Gowun Dodum', sans-serif;
+        * {
+            font-family: 'Noto Serif KR', serif;
         }
-        .myTitle {
+        .mytitle {
             width: 100%;
             height: 250px;
 
-            background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)),url("https://trendsafari.co.kr/wp-content/uploads/2021/07/%EB%9D%BC%EC%9D%B4%EC%96%B8%EC%B6%98%EC%8B%9D%EC%9D%B4.png");
-            background-position: center;
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://img.huffingtonpost.com/asset/5d718fb6240000d117768ab2.jpeg?ops=scalefit_630_noupscale");
             background-size: cover;
+            background-position: center;
 
             color: white;
 
@@ -35,7 +33,8 @@ crossorigin="anonymous"></script>
             justify-content: center;
             align-items: center;
         }
-        .myPost {
+
+        .mypost {
             max-width: 500px;
             width: 95%;
 
@@ -43,83 +42,83 @@ crossorigin="anonymous"></script>
 
             box-shadow: 0px 0px 3px 0px gray;
             padding: 20px;
-
-            color: gray;
         }
-        .myCard {
+
+        .mycard {
             max-width: 500px;
             width: 95%;
 
             margin: 20px auto 0px auto;
-
         }
-        .myButton {
-            /*display: flex;*/
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
 
-            margin-top: 20px;
+        .mycard > div {
+            margin: 10px auto 10px auto;
         }
-        .myCard > div {
-            margin-top: 10px;
+
+         .mybutton {
+            margin: 20px auto 0px auto;
+
         }
     </style>
     <script>
         $(document).ready(function () {
             $.ajax({
-                type: "GET",
-                url: "http://spartacodingclub.shop/sparta_api/weather/yangju",
-                data: {},
-                success: function (response) {
-                    $('#temp').text(response['temp'])
-                }
-            })
-        });
+            type: "GET",
+            url: "http://spartacodingclub.shop/sparta_api/weather/seoul",
+            data: {},
+            success: function (response) {
+                let temp = response['temp']
+
+                let temp_html = `<h5 class="temp">현재기온 : ${temp}</h5>`
+
+                $('.mytitle').append(temp_html)
+            }
+        })
+        })
     </script>
 </head>
 
 <body>
-    <div class="myTitle">
-        <h1>춘식이 팬명록</h1>
-        <p>현재 기온 : <span id="temp">00.00</span>도</p>
+    <div class="mytitle">
+        <h1>세종대왕 팬명록</h1>
     </div>
-    <div class="myPost">
+    <div class="mypost">
         <div class="form-floating mb-3">
             <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
             <label for="floatingInput">닉네임</label>
         </div>
+
         <div class="form-floating">
             <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
                       style="height: 100px"></textarea>
-            <label for="floatingTextarea2">응원댓글</label>
+            <label for="floatingTextarea2">응원 댓글</label>
         </div>
-        <div class="myButton">
-            <button type="button" class="btn btn-dark">응원 남기기</button>
+        <div class="mybutton">
+            <button type="button" class="btn btn-dark">기록하기</button>
         </div>
     </div>
-    <div class="myCard">
+    <div class="mycard">
         <div class="card">
             <div class="card-body">
                 <blockquote class="blockquote mb-0">
-                    <p>새로운 굿즈 너무 귀여워요!</p>
-                    <footer class="blockquote-footer">죠르디</footer>
+                    <p>새로운 한글 너무 멋져요!</p>
+                    <footer class="blockquote-footer">집현전</footer>
                 </blockquote>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <blockquote class="blockquote mb-0">
-                    <p>새로운 굿즈 너무 귀여워요!</p>
-                    <footer class="blockquote-footer">어피치</footer>
+                    <p>새로운 한글 너무 멋져요!</p>
+                    <footer class="blockquote-footer">집현전</footer>
                 </blockquote>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <blockquote class="blockquote mb-0">
-                    <p>새로운 굿즈 너무 귀여워요!</p>
-                    <footer class="blockquote-footer">라이언</footer>
+                    <p>새로운 한글 너무 멋져요!</p>
+                    <footer class="blockquote-footer">집현전</footer>
                 </blockquote>
             </div>
         </div>

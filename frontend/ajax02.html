@@ -22,7 +22,6 @@
             padding: 10px;
             border: 1px solid;
         }
-
         .bujok {
             color: red;
         }
@@ -30,46 +29,42 @@
 
     <script>
         function q1() {
-            // stationName : 거치대 이름
-            // rackTotCnt : 거치대 수
-            // parkingBikeTotCnt : 현재 거치된 따릉이 수
-
             $('#names-q1').empty()
             $.ajax({
-                type: "GET",
-                url: "http://spartacodingclub.shop/sparta_api/seoulbike",
-                data: {},
-                success: function (response) {
-                    let rows = response['getStationList']['row']
+                    type: "GET",
+                    url: "http://spartacodingclub.shop/sparta_api/seoulbike",
+                    data: {},
+                    success: function (response) {
+                        let rows = response['getStationList']['row']
 
+                        for (let i = 0; i < rows.length; i++) {
+                            let station = rows[i]['stationName']
+                            let rack = rows[i]['rackTotCnt']
+                            let parking = rows[i]['parkingBikeTotCnt']
 
-                    for (let i = 0; i < rows.length; i++) {
-                        let bike_stn = rows[i]['stationName']
-                        let bike_rack = rows[i]['rackTotCnt']
-                        let bike_cnt = rows[i]['parkingBikeTotCnt']
+                            let temp_html = ``
 
-                        let temp_html = ``
+                            if (parking < 5) {
+                                temp_html = `<tr class="bujok">
+                                                <td>${station}</td>
+                                                <td>${rack}</td>
+                                                <td>${parking}</td>
+                                            </tr>`;
+                            } else {
+                                temp_html = `<tr>
+                                                <td>${station}</td>
+                                                <td>${rack}</td>
+                                                <td>${parking}</td>
+                                            </tr>`;
+                            }
 
-                        if (bike_cnt < 5) {
-                            temp_html = `<tr class="bujok">
-                                            <td>${bike_stn}</td>
-                                            <td>${bike_rack}</td>
-                                            <td>${bike_cnt}</td>
-                                        </tr>`;
-                        } else {
-                            temp_html = `<tr>
-                                            <td>${bike_stn}</td>
-                                            <td>${bike_rack}</td>
-                                            <td>${bike_cnt}</td>
-                                        </tr>`
+                            $('#names-q1').append(temp_html);
                         }
-                        $('#names-q1').append(temp_html);
+
                     }
+                })
+            }
 
-
-                }
-            })
-        }
     </script>
 
 </head>

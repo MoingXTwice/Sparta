@@ -17,39 +17,37 @@
     <script>
         function q1() {
             // 1. input-q1의 입력값을 가져온다. $('# .... ').val() 이렇게!
-            let q1_val = $('#input-q1').val();
-
-            if (q1_val == '') { // 2. 만약 입력값이 빈칸이면 if(입력값=='')
-                alert('입력하세요!'); // 3. alert('입력하세요!') 띄우기
+            let q1 = $('#input-q1').val()
+            // 2. 만약 입력값이 빈칸이면 if(입력값=='')
+            if (q1 == '') {
+                // 3. alert('입력하세요!') 띄우기
+                alert('입력하세요!');
             } else {
-                alert(q1_val); // 4. alert(입력값) 띄우기
+                // 4. alert(입력값) 띄우기
+                alert(q1)
             }
         }
 
         function q2() {
             // 1. input-q2 값을 가져온다.
-            let q2_val = $('#input-q2').val();
-
-            if (q2_val.includes('@')) { // 2. 만약 가져온 값에 @가 있으면 (includes 이용하기 - 구글링!)
-                // 3. info@gmail.com -> gmail 만 추출해서 ( .split('@') 을 이용하자!)
-                alert(q2_val.split('@')[1].split('.')[0]); // 4. alert(도메인 값);으로 띄우기
+            let q2 = $('#input-q2').val()
+            // 2. 만약 가져온 값에 @가 있으면 (includes 이용하기 - 구글링!)
+            if (q2.includes('@')) { // 3. info@gmail.com -> gmail 만 추출해서 ( .split('@') 을 이용하자!)
+                // 4. alert(도메인 값);으로 띄우기
+                alert(q2.split('@')[1].split('.')[0])
             } else {
-                alert('이메일이 아닙니다.'); // 5. 만약 이메일이 아니면 '이메일이 아닙니다.' 라는 얼럿 띄우기
+                // 5. 만약 이메일이 아니면 '이메일이 아닙니다.' 라는 얼럿 띄우기
+                alert('이메일이 아닙니다.')
             }
         }
 
         function q3() {
             // 1. input-q3 값을 가져온다. let txt = ... q1, q2에서 했던 걸 참고!
-            let q3_val = $('#input-q3').val();
-
+            let q3 = $('#input-q3').val()
             // 2. 가져온 값을 이용해 names-q3에 붙일 태그를 만든다. (let temp_html = `<li>${txt}</li>`) 요렇게!
-            let temp_html = `<li>${q3_val}</li>`
-
-            if (q3_val == '') {
-                alert('입력하세요!');
-            } else {
-                $('#names-q3').append(temp_html); // 3. 만들어둔 temp_html을 names-q3에 붙인다.(jQuery의 $('...').append(temp_html)을 이용하면 굿!)
-            }
+            let temp_html = `<li>${q3}</li>`
+            // 3. 만들어둔 temp_html을 names-q3에 붙인다.(jQuery의 $('...').append(temp_html)을 이용하면 굿!)
+            $('#names-q3').append(temp_html)
         }
 
         function q3_remove() {
