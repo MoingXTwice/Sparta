@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <title>초미니홈피 - 팬명록</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Serif KR', serif;
+        }
+        .mytitle {
+            width: 100%;
+            height: 250px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://img.huffingtonpost.com/asset/5d718fb6240000d117768ab2.jpeg?ops=scalefit_630_noupscale");
+            background-size: cover;
+            background-position: center;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mypost {
+            max-width: 500px;
+            width: 95%;
+
+            margin: 20px auto 0px auto;
+
+            box-shadow: 0px 0px 3px 0px gray;
+            padding: 20px;
+        }
+
+        .mycard {
+            max-width: 500px;
+            width: 95%;
+
+            margin: 20px auto 0px auto;
+        }
+
+        .mycard > div {
+            margin: 10px auto 10px auto;
+        }
+
+         .mybutton {
+            margin: 20px auto 0px auto;
+
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+            set_temp()
+            show_comment()
+        });
+        function set_temp() {
+            $.ajax({
+                type: "GET",
+                url: "http://spartacodingclub.shop/sparta_api/weather/seoul",
+                data: {},
+                success: function (response) {
+                    let temp = response['temp']
+
+                    let temp_html = `<h5 class="temp">현재기온 : ${temp}도</h5>`
+
+                    $('.mytitle').append(temp_html)
+                }
+            })
+        }
+        function save_comment(){
+            let nickname = $('#floatingInput').val()
+            let comment = $('#floatingTextarea2').val()
+            $.ajax({
+                type: 'POST',
+                url: '/homework',
+                data: {nickname_give:nickname, comment_give:comment},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            })
+        }
+        function show_comment(){
+            $.ajax({
+                type: "GET",
+                url: "/homework",
+                data: {},
+                success: function (response) {
+                    let rows = response['lists']
+
+                    for (let i = 0; i <rows.length; i++) {
+                        let nickname = rows[i]['nickname']
+                        let comment = rows[i]['comment']
+
+                        let temp_html = `<div class="card">
+                                            <div class="card-body">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p>${comment}</p>
+                                                    <footer class="blockquote-footer">${nickname}</footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>`
+
+                        $('.mycard').append(temp_html)
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="mytitle">
+        <h1>세종대왕 팬명록</h1>
+        <p5></p5>
+    </div>
+    <div class="mypost">
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">닉네임</label>
+        </div>
+
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
+                      style="height: 100px"></textarea>
+            <label for="floatingTextarea2">응원 댓글</label>
+        </div>
+        <div class="mybutton">
+            <button type="button" class="btn btn-dark" onclick="save_comment()">기록하기</button>
+        </div>
+    </div>
+
+    <div class="mycard">
+    </div>
+</body>
+</html>
