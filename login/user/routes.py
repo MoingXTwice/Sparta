@@ -10,6 +10,11 @@ def signup():
 def signout():
     return User().signout()
 
-@app.route('/user/login', methods=["POST"])
+@app.route("/user/login", methods=["POST"])
 def login():
-    return User.login()
+    return User().login()
+
+# 위에는 되고 아래는 안됨 왜???
+# @app.route('/user/login', methods=["POST"])
+# def login():
+#     return User.login()

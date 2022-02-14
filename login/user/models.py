@@ -42,7 +42,7 @@ class User:
             "email": request.form.get("email")
         })
 
-        if user:
+        if user and pbkdf2_sha256.verify(request.form.get('password'), user['password']):
             return self.start_session(user)
 
         return jsonify({"error": "로그인 정보가 일치하지 않습니다."}), 401
