@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="28e2c46f-27d6-450d-ae3b-5e3a6662d0b1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/user/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/user/routes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +48,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.templateLanguages.PyTemplateLanguageModulesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -95,7 +93,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644569852574</updated>
-      <workItem from="1644569854342" duration="13183000" />
+      <workItem from="1644569854342" duration="18118000" />
+      <workItem from="1644846826853" duration="52000" />
+      <workItem from="1644846890255" duration="3000" />
+      <workItem from="1644846929930" duration="29000" />
     </task>
     <servers />
   </component>
