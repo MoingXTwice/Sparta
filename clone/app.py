@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 import jwt
 import datetime
 import hashlib
@@ -14,6 +14,9 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = "./static/profile_pics"
 
+app.secret_key = 'CLONE'
+
+# JWT를 사용하기 위한 SECRET_KEY
 SECRET_KEY = 'CLONE'
 
 from pymongo import MongoClient
@@ -22,11 +25,21 @@ db = client.clone
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    reviews = list(db.reviews.find({}))
+    for i in range(len(reviews)):
+        reviews[i]['_id'] = str(reviews[i]['_id'])
+    return render_template('index.html', reviews=reviews)
+
 
 @app.route('/register')
 def register():
-    return render_template('register.html', msg='회원가입 페이지')
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        flash('이미 로그인되어 있습니다.')
+        return redirect(url_for('home'))
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return render_template('register.html', msg='회원가입 페이지')
 
 # 서버 ID 중복체크 API
 @app.route('/register/check_dup', methods=['POST'])
@@ -61,8 +74,13 @@ def sign_up():
 # 로그인 페이지
 @app.route('/login')
 def login():
-    msg = request.args.get("msg")
-    return render_template('login.html', msg = '회원가입 페이지')
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        flash('이미 로그인되어 있습니다.')
+        return redirect(url_for('home'))
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return render_template('login.html')
 
 # 로그인 API
 @app.route('/login_in', methods=['POST'])
