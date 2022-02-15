@@ -9,6 +9,9 @@
     <meta property="og:title" content="캠핑 쀼"/>
     <meta property="og:description" content="캠핑용품 리뷰 사이트"/>
     <meta property="og:image" content="{{ url_for('static', filename='camping.png') }}"/>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
@@ -17,13 +20,14 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Stylish&display=swap" rel="stylesheet">
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/mystyle.css') }}" rel="stylesheet">
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
     <style>
+
         .title {
             font-weight: 800;
             font-size: 5rem;
@@ -34,17 +38,17 @@
         .subtitle {
             font-family: 'Gamja Flower', cursive;
             font-size: 2rem;
+
         }
 
         .help {
             color: gray;
         }
     </style>
-
     <script>
-        {%if msg %}
-            {#alert("{{ msg }}")#}
-        {%endif %}
+        {% if msg %}
+        {#alert("{{ msg }}")#}
+        {% endif %}
 
         function is_id(asValue) {
             var regExp = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{6,10}$/;
@@ -61,7 +65,7 @@
             return regExp.test(asValue);
         }
 
-        // 클라이언트 ID 중복체크 API
+        //클라이언트 ID 중복체크 API
 
         function check_dup() {
             let id = $("#input-id").val()
@@ -94,7 +98,8 @@
             });
         }
 
-        // 클라이언트 닉네임 중복체크 API
+        {#클라이언트 닉네임 중복체크 API#}
+
         function check_dup_nick() {
             let nick = $("#input-nick").val()
             if (nick == "") {
@@ -126,7 +131,7 @@
             });
         }
 
-        // 클라이언트 아이디 생성 API
+        //클라이언트 아이디 생성 API
 
         function sign_up() {
             let id = $("#input-id").val()
@@ -184,9 +189,6 @@
                     window.location.replace("/login")
                 }
             });
-        }
-        function home(){
-            window.location.replace("/")
         }
     </script>
 </head>
@@ -258,7 +260,9 @@
                 </div>
             </article>
         </div>
+
     </div>
 </section>
+
 </body>
 </html>
