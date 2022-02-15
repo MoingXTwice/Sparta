@@ -25,7 +25,7 @@
 
     <script>
 
-    $(document).ready(function () {
+        $(document).ready(function () {
             $(".star_rating a").click(function () {
                 $(this).parent().children("a").removeClass("on");
                 $(this).addClass("on").prevAll("a").addClass("on");
@@ -98,7 +98,7 @@
                     success: function (response) {
                         if (response.result) {
                             console.log(response.review_id)
-                            alert(response["msg"]);
+                            alert(response["등록이 완료되었습니다."]);
                             //window.location.href = "/reivew?review_id=" + response.review_id
                         } else {
                             alert(response["msg"])
@@ -146,19 +146,25 @@
                     product_url: url.val()
                 },
                 success: function (response) {
-                    let product_info = response['product_info']
-                    let imag_src = product_info['image_src']
-                    preview.attr('src', imag_src)
-                    name.val(product_info['title'])
-                    $('#product-url').attr('readonly',true)
+                    let image_src = response['image_src']
+                    let title = response['title']
+                    if(image_src){
+                        preview.attr('src', image_src)
+                    }
+                    if(title){
+                        name.val(title)
+                        $('#product-url').attr('readonly',true)
+                    }
                 }
             });
         }
 
         function urlRset() {
-            $("#product-url").removeAttr('readonly').val('');
-            //미리보기 이미지 초기화
-            $('#preview-img').attr('src', '')
+            if($("#product-url").prop('readonly')){
+                 $("#product-url").removeAttr('readonly').val('');
+                //미리보기 이미지 초기화
+                $('#preview-img').attr('src', '')
+            }
         }
         function showImage(uploadImage) {
             let preview = $('#preview-img')
@@ -169,7 +175,7 @@
                 }
                 reader.readAsDataURL(uploadImage.files[0]);
             } else {
-                preview.setAttribute("src", '');
+                preview.attr("src", '');
             }
         }
 
