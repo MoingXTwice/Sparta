@@ -1,8 +1,11 @@
 body {
-    background-color: RGBA(232, 52, 78, 0.2);
+    background-color: white;
     min-height: 100vh;
 }
-
+.card-columns{
+    max-width: 1080px;
+    margin:0 auto;
+}
 .section {
     padding: 1rem 1.5rem;
     max-width: 750px;
@@ -10,13 +13,19 @@ body {
 }
 
 .is-sparta {
-    color: #e8344e !important;
+    color: white;
 }
 
 .button.is-sparta {
     background-color: #e8344e;
     border-color: transparent;
     color: #fff !important;
+}
+
+.button.is-sparta.is-outlined {
+    background-color: transparent;
+    border-color: #e8344e;
+    color: #e8344e !important;
 }
 
 .button.is-sparta.is-outlined {
@@ -35,7 +44,80 @@ input::-webkit-calendar-picker-indicator {
 }
 
 .image img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    font-weight: 800;
+    font-size: 5rem;
+    font-family: 'Stylish', sans-serif;
+}
+
+.subtitle {
+    font-family: 'Gamja Flower', cursive;
+    font-size: 2rem;
+
+}
+
+.help {
+    color: gray;
+}
+
+.card {
+    width: 500px;
+    height: 600px;
+    margin: 20px 10px 10px 10px;
+}
+
+.crad-image-area{
+    height: 350px;
+}
+.card-img-top {
+    width: 100%;
+    height: 100%;
     object-fit:cover;
-    width:100%;
-    height:100%;
+    /*height: 300px;*/
+}
+
+.card-title {
+    line-height: 30px;
+    font-size: 30px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-price {
+    font-size: 18px;
+    color: gray;
+    text-align: right;
+}
+
+.card-comment {
+    min-height: 90px;
+    font-size: 20px;
+    color: #18181a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.review-star{
+    color: #facf24;
+    margin:10px;
+}
+
+.card-body{
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.check-msg{
+    color: red;
+    font-size: 15px;
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>REVIEW | CAMPING-VIEW</title>
     <meta charset="UTF-8">
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
@@ -19,93 +20,121 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
     <!--header-->
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
-    <title>Review Write</title>
-
 
     <script>
         $(document).ready(function () {
-            reviewStar();
         });
-
-        function reviewStar(){
-            //a태그에 별넣어주기
-            let star=''
-            for(let i=0; i<{{review.star}}; i++){
-                star+='★'
-            }
-            $('#review_star a').text(star)
-        }
-        function deleteReview() {
+        function deleteReview(delete_id) {
             if(confirm('정말 삭제하시겠습니까?')){
                 $.ajax({
                     type   : "POST"
-                    ,url    : "/review/delete.json"
-                    ,dataType: "json"
+                    ,url    : "/review/delete"
                     ,data   : {
-                         delete_id : '{{review._id}}'
+                         delete_id : delete_id
                     }
                     ,success: function (response) {
                          if(response['result']){
                              alert(response['msg'])
                              window.location.href = "/"
+                         }else {
+                             alert(response['msg'])
                          }
                     }
                 });
             }
         }
-
     </script>
 
 </head>
 <body>
-    <section class="hero is-white">
-        <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
-            <h1 class="title is-sparta" onclick="home()">캠핑 쀼</h1>
-            <h3 class="subtitle is-sparta">세상을 즐겁게</h3>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                   {# 로그인여부 데이터를 담아 리뷰작성메소드호출#}
+                    <a class="button is-warning" onclick="writeReview('{% if status %}true{% else %}false{% endif %}')";>리뷰작성</a>
+                    {% if status %}
+                        {#로그인이 되어있으면 로그아웃버튼 출력#}
+                        <a class="button is-light" onclick="logout_out()">로그아웃</a>
+                    {% else %}
+                        {#로그인이 안되어있으면 로그인 버튼 출력#}
+                        <a class="button is-primary" onclick="login()"><strong>로그인</strong></a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div>
-            {#TODO 로그인 여부에따라 버튼 보여주기#}
-            <button onclick="writeReview()">리뷰쓰기</button>
-            <button onclick="login()">로그인</button>
-            <button onclick="logout_out()">로그아웃</button>
+    </nav>
+    <section class="hero is-success">
+        <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+            <a href="/">
+                <h1 class="title is-sparta">캠핑 쀼</h1>
+                <h3 class="subtitle is-sparta">내돈내산</h3>
+            </a>
         </div>
     </section>
-    <form id="review-detail" method="post" enctype="multipart/form-data">
-        <div class="image-area">
-            <div class="image-preview">
-       {#TODO 이미지 #}
+    <section class="section detail-section">
+        <div class="container">
+            <div class="box">
+                <form id="review-detail" method="post" enctype="multipart/form-data">
+                    <fieldset class="detail-field" disabled>
+                        <div class="image-area field">
+                            <div class="image-preview">
+                                <img class="img" id="preview-img" src="{{ review.crawling_image }}" height="700" width="500">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="product-name">상품명</label>
+                            <div class="control">
+                                <input type="text" class="input" id="product-name" name="name" value="{{ review.name }}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="product-price">가격</label>
+                            <div class="control">
+                                <input type="number" id="product-price" class="input" name="price" value="{{ review.price }}">
+                            </div>
+                        </div>
+                        <div id="review_star" class="field star_rating">
+                            <div class="control">
+                                 {% for x in range(review.star | int) %}
+                                    <a class="on">★</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field">
+                                <div class="control">
+                                    <textarea class="textarea" id="review-content" name="content">{{ review.content }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        {#첨부파일 업로드했을 경우를 대비한코드 - 첨부파일업로드시 url입력 안해도되므로 조건문을 줌 #}
+                        {% if review.url !='' %}
+                            <div class="field">
+                                <div class="control">
+                                    <label class="label" for="product-price">구매링크</label>
+                                    <input type="url" class="input" id="product-url" name="url" value="{{ review.url }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                    </fieldset>
+                    <div class="button-area">
+                        {% if review.url !='' %}
+                           <a class="button is-success is-outlined" href="{{ review.url }}" target="_blank">나도 사러가기</a>
+                        {% endif %}
+
+                        {#접속한 유저가 쓴 리뷰라면 삭제하기 버튼 출력#}
+                        {#{%  if my_review %}#}
+                            <button type="button" class="button is-danger" onclick="deleteReview('{{ review._id }}')">삭제하기</button>
+                        {#{% endif %}#}
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="">
-            <label for="product-name">상품명</label>
-            <input type="text" id="product-name" name="name" value="{{ review.name }}" disabled>
-        </div>
-        <div class="">
-            <label for="product-price">가격</label>
-            <input type="number" id="product-price" class="" name="price" value="{{ review.price }}" disabled>
-        </div>
-        <div id="review_star" class="star_rating">
-            <a id="detail_star" class="on"></a>
-        </div>
-
-        <div class="">
-            <textarea id="review-content" name="content" disabled>{{ review.content }}</textarea>
-        </div>
-        <!--TODO 내글이면 삭제하기 버튼 보여주기-->
-        {% if my_review %}
-            <button type="button" onclick="deleteReview()">삭제하기</button>
-         {% endif %}
-        {% if review.url  is not none %}
-            <div class="">
-                <input type="url" id="product-url" name="url" value="{{ review.url }}" disabled>
-                <a href="{{ review.url }}" target="_blank">나도 사러가기</a>
-            </div>
-        {% endif %}
-
-    </form>
-
+    </section>
 </body>
 </html>

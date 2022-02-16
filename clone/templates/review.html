@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>REVIEW WRITE | CAMPING-VIEW</title>
     <meta charset="UTF-8">
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
@@ -19,25 +20,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <!--header-->
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
-    <title>Review Write</title>
+
 
     <script>
 
         $(document).ready(function () {
+
+            /**리뷰 별점 눌렀을때의 처리. on클래스 넣어주면 별색이 노란색으로 변함*/
             $(".star_rating a").click(function () {
                 $(this).parent().children("a").removeClass("on");
                 $(this).addClass("on").prevAll("a").addClass("on");
             });
         });
 
+        /**리뷰정보입력시 입력값 안들어온거 있는지 체크*/
+        /*TODO onhange로 바꿔서 입력이 되면 경고메시지 삭제*/
         function valueCheck() {
             let check = true
-
+            /*첨부파일 이미지 업로드가 가능했다면 필요한 코드
             //상품 이미지 체크 - 업로드, 크롤링 둘다 안했을 경우 경고메시지
             let image = $('#product-image')[0].files[0]
-            let privew_image = $('#preview-img').attr('src')
 
             if (image == undefined || image == null || image == '') {
                 if(privew_image.length<1 ){
@@ -45,9 +50,16 @@
                     check = false
                 }
             }
+            */
+            /**이미지 크롤링 안되어있을 때*/
+            let privew_image = $('#preview-img').attr('src')
+            if (privew_image=='https://shejidaxue.com/wp-content/uploads/2018/08/2-191.jpg') {
+                $('#preview-img').siblings('.check-msg').text('이미지를 등록해주세요')
+                check = false
+            }
             //상품명 체크
             let name = $('#product-name')
-            if (name.val() == 0 || name.val().length < 1) {
+            if (name.val().length < 1) {
                 name.siblings('.check-msg').text('상품명을 입력해주세요')
                 check = false
             }
@@ -61,8 +73,15 @@
 
             //리뷰내용 체크
             let content = $('#review-content')
-            if (content.val() == 0 || content.val().length < 1) {
+            if (content.val().length < 1) {
                 content.siblings('.check-msg').text('리뷰내용을 입력해주세요')
+                check = false
+            }
+
+            //구매링크 체크
+            let url = $('#product-url')
+            if ( url.val().length < 1) {
+                url.siblings('.check-msg').text('url을 입력해주세요')
                 check = false
             }
             return check
@@ -71,14 +90,16 @@
 
         function insertReview() {
             if (valueCheck()) {
-                let image = $('#product-image')[0].files[0]
+
                 let formData = new FormData();
-                //직접 이미지를 올렸을 때
+                /*
+                //파일업로드 처리
+                let image = $('#product-image')[0].files[0]
                 if (image == undefined || image == null || image == '') {
                     image =  $('#preview-img').attr('src')
                 }
                 formData.append("image", image)
-
+                */
                 let review_form = $("#review-form").serializeArray();
                 // 모든 유효성, 중복 체크가 확인 됐을 때
                 review_form.forEach(function (data) {
@@ -88,6 +109,9 @@
                 //별점
                 formData.append("star", $(".on").length)
 
+                //이미지 추가
+                formData.append("image",$('#preview-img').attr('src'))
+
                 $.ajax({
                     url: "/review/insert.json",
                     type: "POST",
@@ -96,49 +120,66 @@
                     contentType: false,
                     dataType: "json",
                     success: function (response) {
-                        if (response.result) {
-                            console.log(response.review_id)
-                            alert(response["등록이 완료되었습니다."]);
-                            //window.location.href = "/reivew?review_id=" + response.review_id
+                        if (response['result']) {
+                            alert("등록이 완료되었습니다")
+                            window.location.href="/"
+                            //TODO 넘어온 id값과 테이블에 저장된 id값이 달라서 오류가남.확인필요
+                            // let review_id = response['review_id']
+                            //window.location.href = "/reivew?review_id="+review_id
                         } else {
-                            alert(response["msg"])
+                            alert(response['msg'])
+                            //로그인이 안되어있으면 로그인페이지 호출
+                            if(response['status']=='login_fail'){
+                                window.location.href="/"
+                            }
                         }
-
+                    },
+                    fail : function(data, textStatus, errorThrown){
+                        alert('다시 이용해주세요')
+                        window.location.href="/"
                     }
                 });
             }
         }
 
+        /**구매링크 설명글 보여주기 */
         function infoOpen() {
             $('#url-info').append(`<p>상품을 구매한 url주소를 입력해주시면 이미지와 상품명을 입력해줍니다.</p>`)
             $('#url-button').attr('onclick', 'infoClose()')
         }
 
+        /**구매링크 설명글 닫기 */
         function infoClose() {
             $('#url-info').empty()
             $('#url-button').attr('onclick', 'infoOpen()')
         }
 
-        /* 상품정보 크롤링 */
+        /** 상품정보 크롤링. 이미지와 상품명 가져오기 */
         function crawlingProduct() {
             let url = $('#product-url')
+
+            /** 크롤링할 url이 입력되지않았다면 return */
             if (url.val().length < 1) {
                 url.siblings('.check-msg').text('url을 입력해주세요.')
                 return true
             }
             let preview = $('#preview-img')
             let name = $('#product-name')
+            /*
+            //첨부파일 업로드가 됐다면 있어야하는 코드
+            //업로드된 파일이 있을경우 파일 삭제
             let product_image = $('#product-image')
             if (preview.attr('src').length > 0) {
-                if (confirm("저장된 정보가 사라집니다. url로 정보를 가져오시겠습니까?")) {
+                //미리보기 이미지, 파일업로드, 상품명 초기화
+                if (confirm("입력된 이미지, 상품명 정보가 사라집니다.\nurl로 정보를 가져오시겠습니까?")) {
                     //미리보기 이미지, 파일업로드, 상품명 초기화
                     preview.attr('src', '')
-                    product_image.val('')
+                   // product_image.val('')
                     name.val('')
                 } else {
                     return true
                 }
-            }
+            }*/
             $.ajax({
                 url: "/crawling/productInfo",
                 type: "POST",
@@ -159,13 +200,20 @@
             });
         }
 
+        /**크롤링한 이미지 초기화*/
+        /*상품명은 직접입력했을수도있어서 초기화하지않음*/
         function urlRset() {
             if($("#product-url").prop('readonly')){
                  $("#product-url").removeAttr('readonly').val('');
                 //미리보기 이미지 초기화
-                $('#preview-img').attr('src', '')
+                $('#preview-img').attr('src', 'https://shejidaxue.com/wp-content/uploads/2018/08/2-191.jpg')
             }
         }
+        /*파일업로드 관련 코드
+        function fileClick() {
+            $('#product-image').click()
+        }
+
         function showImage(uploadImage) {
             let preview = $('#preview-img')
             if (uploadImage.files && uploadImage.files[0]) {
@@ -178,101 +226,100 @@
                 preview.attr("src", '');
             }
         }
-
-        function before_logout() {
-            if (confirm('로그아웃을 하시면 입력된 정보가 사라집니다. 로그아웃 하시겠습니까?')) {
-                logout_out()
-            }
-        }
-
-        function like(){
-            $.ajax({
-                url: "/review/like",
-                type: "POST",
-                data: {
-                    review_id : 1
-                },
-                success: function (response) {
-                    //리뷰 클릭 후처리
-                }
-            });
-        }
-
-        // function detailReview(id){
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "/review",
-        //         data: {review_id : id},
-        //         success: function (response) {
-        //             alert('review detail');
-        //         }
-        //     })
-        // }
-
+        */
     </script>
 </head>
 <body>
-    <section class="hero is-white">
-        <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
-            <h1 class="title is-sparta" onclick="home()">캠핑 쀼</h1>
-            <h3 class="subtitle is-sparta">세상을 즐겁게</h3>
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background:url(https://shejidaxue.com/wp-content/uploads/2018/08/2-191.jpg); background-repeat:repeat; background-size: 400px ">
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    {# 로그인여부 데이터를 담아 리뷰작성메소드호출#}
+                    <a class="button is-warning" onclick="writeReview('{% if status %}true{% else %}false{% endif %}')";>리뷰작성</a>
+                    {% if status %}
+                        {#로그인이 되어있으면 로그아웃버튼 출력#}
+                        <a class="button is-light" onclick="logout_out()">로그아웃</a>
+                    {% else %}
+                        {#로그인이 안되어있으면 로그인 버튼 출력#}
+                        <a class="button is-primary" onclick="login()"><strong>로그인</strong></a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div>
-            <button onclick="login()">로그인</button>
-            <button onclick="before_logout()">로그아웃</button>
+    </nav>
+    <section class="hero is-success">
+        <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+            <a href="/">
+                <h1 class="title is-sparta">캠핑 쀼</h1>
+                <h3 class="subtitle is-sparta">내돈내산</h3>
+            </a>
+
         </div>
     </section>
-    <form id="review-form" method="post" enctype="multipart/form-data">
-        <div class="image-area">
-            <div class="image-preview">
-                <img class="img" id="preview-img" src="" height="300" width="300">
-            </div>
-            <div class="image-upload">
-                <label for="product-image"> </label>
-                <input type="file" id="product-image" name="image" onchange="showImage(this)" accept="image/*" multiple>
-                <p class="check-msg"></p>
-            </div>
-        </div>
+    <section class="section">
+        <div class="container">
+            <form id="review-form" method="post" enctype="multipart/form-data">
+                <div class="image-area">
+                    <div class="image-preview">
+                        {#  onclick="fileClick()" -> 미리보기영역 클릭시 파일업로드창 띄우기#}
+                        <img class="img" id="preview-img" src="https://shejidaxue.com/wp-content/uploads/2018/08/2-191.jpg" height="auto" width="auto">
+                        <p class="check-msg"></p>
+                    </div>
+        {#            첨부파일 업로드 부분 #}
+        {#            <div class="image-upload">#}
+        {#                <label for="product-image"> </label>#}
+        {#                <input type="file" id="product-image" name="image" onchange="showImage(this)" accept="image/*" multiple>#}
+        {#                #}
+        {#            </div>#}
+                </div>
+                <div class="box">
+                    <label class="box-label" for="product-name">상품명</label>
+                    <div class="control">
+                        <input id="product-name" name="name" value="" class="input" type="text" placeholder="상품명을 입력해주세요">
+                        <p class="check-msg"></p>
+                    </div>
+                </div>
+                <div class="box">
+                    <label class="box-label" for="product-price">가격</label>
+                    <div class="control">
+                        <input id="product-price" name="price" value="" class="input box" type="number" placeholder="상품 가격을 입력해주세요">
+                        <p class="check-msg"></p>
+                    </div>
+                </div>
 
-        <div class="">
-            <label for="product-name">상품명</label>
-            <input type="text" id="product-name" name="name" value="" placeholder="상품명을 입력해주세요">
-            <p class="check-msg"></p>
-        </div>
-        <div class="">
-            <label for="product-price">가격</label>
-            <input type="number" id="product-price" class="" name="price" value="" placeholder="상품 가격을 입력해주세요">
-            <p class="check-msg"></p>
-        </div>
-        <div class="">
-            <!--TODO 크롤링-->
-            <button id="url-button" type="button" onclick="infoOpen()">?</button>
-            <div id="url-info"></div>
-            <label for="product-url">url</label>
-            <input type="url" id="product-url" class="" name="url" placeholder="https://example.com" pattern="https://.*">
-            <button type="button" onclick="crawlingProduct();">입력</button>
-            <button type="button" onclick="urlRset();">초기화</button>
-            <p class="check-msg"></p>
-        </div>
-        <!--TODO 별점-->
-        <div class="star_rating">
-            <a class="on">★</a>
-            <a class="on">★</a>
-            <a class="on">★</a>
-            <a class="on">★</a>
-            <a class="on">★</a>
-            <input type="hidden" id="review-star" name="star" value="5">
-        </div>
+                 <div class="review-info">
+                    <div class="control box">
+                        <label class="box-label" for="product-url">구매링크</label>
+                        <i class="bi bi-patch-question-fill" id="url-button" type="button"  onclick="infoOpen()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-patch-question-fill" viewBox="0 0 16 16">
+                                <path d="M5.933.87a2.89 2.89 0 0 1 4.134 0l.622.638.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636zM7.002 11a1 1 0 1 0 2 0 1 1 0 0 0-2 0zm1.602-2.027c.04-.534.198-.815.846-1.26.674-.475 1.05-1.09 1.05-1.986 0-1.325-.92-2.227-2.262-2.227-1.02 0-1.792.492-2.1 1.29A1.71 1.71 0 0 0 6 5.48c0 .393.203.64.545.64.272 0 .455-.147.564-.51.158-.592.525-.915 1.074-.915.61 0 1.03.446 1.03 1.084 0 .563-.208.885-.822 1.325-.619.433-.926.914-.926 1.64v.111c0 .428.208.745.585.745.336 0 .504-.24.554-.627z"/>
+                            </svg>
+                        </i>
+                        <div id="url-info"></div>
+                        <input type="url" id="product-url" class="input box" name="url" placeholder="https://example.com" pattern="https://.*">
+                        <p class="check-msg"></p>
+                        <div class="url-info-btn">
+                            <button class="button is-success" type="button" onclick="crawlingProduct();">입력</button>
+                            <button class="button is-success" type="button" onclick="urlRset();">초기화</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="star_rating">
+                    <a class="on">★</a>
+                    <a class="on">★</a>
+                    <a class="on">★</a>
+                    <a class="on">★</a>
+                    <a class="on">★</a>
+                </div>
 
-        <div class="">
-            <textarea id="review-content" name="content"></textarea>
-            <p class="check-msg"></p>
+                 <div class="review-content">
+                    <textarea id="review-content" name="content" class="textarea is-success" placeholder=""></textarea>
+                    <p class="check-msg"></p>
+                </div>
+                <button style="display:block;margin:0 auto" class="button is-success" type="button" onclick="insertReview();">등록하기</button>
+            </form>
         </div>
-        <button type="button" onclick="insertReview();">등록하기</button>
-        <button type="button" onclick="updateReview();">수정하기</button>
-        <button type="button" onclick="deleteReview();">삭제하기</button>
-    </form>
-    <!--TODO 강의처럼 span으로 바꿔주세요. -->
-    <button type="button" onclick="like()">도움돼요</button>
+    </section>
 </body>
 </html>
