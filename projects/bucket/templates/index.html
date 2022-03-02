@@ -101,6 +101,7 @@
                         } else {
                             temp_html = `<li>
                                             <h2 class="done">✅ ${bucket}</h2>
+                                            <button onclick="done_bucket_cancel(${id})" type="button" class="btn btn-outline-danger">취소</button>
                                         </li>`
                         }
 
@@ -125,6 +126,16 @@
             $.ajax({
                 type: "POST",
                 url: "/bucket/done",
+                data: {id_give:id},
+                success: function (response) {
+                    window.location.reload()
+                }
+            });
+        }
+        function done_bucket_cancel(id){
+            $.ajax({
+                type: "POST",
+                url: "/bucket/done_cancel",
                 data: {id_give:id},
                 success: function (response) {
                     window.location.reload()
