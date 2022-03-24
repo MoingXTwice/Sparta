@@ -4,8 +4,11 @@ app = Flask(__name__)
 import requests
 from bs4 import BeautifulSoup
 
+import certifi
+ca = certifi.where()
+
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://test:sparta@cluster0.gjg5o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://test:<password>@cluster0.gjg5o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', tlsCAFile=ca)
 db = client.dbsparta
 
 @app.route('/')

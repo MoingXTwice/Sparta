@@ -1,24 +1,18 @@
 const mongoose = require('mongoose');
 
 const goodsSchema = new mongoose.Schema({
-    goodsId: {
+    board_id: {
         type: Number,
         required: true,
         unique: true,
     },
-    name: {
+    title: {
         type: String,
         required: true,
-        unique: true,
     },
-    thumbnailUrl: {
+    content: {
         type: String,
-    },
-    category: {
-        type: String,
-    },
-    price: {
-        type: Number,
+        required: true,
     },
 });
 
