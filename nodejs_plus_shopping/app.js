@@ -12,8 +12,29 @@ const http = Http.createServer(app);
 const io = socketIo(http);
 const router = express.Router();
 
+const socketIdMap = {};
+
+function emitSamePageViewCount() {
+    const countByUrl = Object.values(socketIdMap).reduce((value, url) => {
+        return {
+            ...value,
+            [url]: value[url] ? value[url] + 1 : 1,
+        };
+    }, {});
+
+    for (const [socketId, url] of Object.entries(socketIdMap)) {
+        const count = countByUrl[url];
+        io.to(socketId).emit("SAME_PAGE_VIEWER_COUNT", count);
+    }
+}
+
 io.on('connection', (socket) => {
-    console.log('누군가 연결했어요!');
+    socketIdMap[socket.id] = null;
+
+    socket.on("CHANGED_PAGE", (data) => {
+        socketIdMap[socket.id] = data;
+        emitSamePageViewCount()
+    });
 
     socket.on("BUY", (data) => {
         const payload = {
@@ -22,12 +43,12 @@ io.on('connection', (socket) => {
             goodsName: data.goodsName,
             date: new Date().toISOString(),
         }
-        console.log('클라이언트가 구매한 data : ', data, new Date());
         socket.broadcast.emit('BUY_GOODS', payload);
     })
 
     socket.on('disconnect', () => {
-        console.log('누군가 연결을 끊었어요!')
+        delete socketIdMap[socket.id];
+        emitSamePageViewCount()
     })
 })
 
