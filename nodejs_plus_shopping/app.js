@@ -1,4 +1,6 @@
-const express = require("express");
+const express = require('express');
+const Http = require('http');
+const socketIo = require('socket.io');
 const {Op} = require("sequelize");
 const {User, Cart, Goods} = require('./models'); //index는 생략 가능
 const Joi = require('joi');
@@ -6,7 +8,28 @@ const jwt = require('jsonwebtoken');
 const authMiddleware = require('./middlewares/auth-middleware');
 
 const app = express();
+const http = Http.createServer(app);
+const io = socketIo(http);
 const router = express.Router();
+
+io.on('connection', (socket) => {
+    console.log('누군가 연결했어요!');
+
+    socket.on("BUY", (data) => {
+        const payload = {
+            nickname: data.nickname,
+            goodsId: data.goodsId,
+            goodsName: data.goodsName,
+            date: new Date().toISOString(),
+        }
+        console.log('클라이언트가 구매한 data : ', data, new Date());
+        socket.broadcast.emit('BUY_GOODS', payload);
+    })
+
+    socket.on('disconnect', () => {
+        console.log('누군가 연결을 끊었어요!')
+    })
+})
 
 // 회원가입 validate
 const postUsersSchema = Joi.object({
@@ -209,6 +232,6 @@ router.delete('/goods/:goodsId/cart', authMiddleware, async (req, res) => {
 app.use("/api", express.urlencoded({extended: false}), router);
 app.use(express.static("assets"));
 
-app.listen(8080, () => {
+http.listen(8080, () => {
     console.log("서버가 요청을 받을 준비가 됐어요");
 });
